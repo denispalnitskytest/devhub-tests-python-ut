@@ -4,7 +4,7 @@
   "description": "Simple Hello World that listens on localhost:8080",
   "main": "server.js",
   "scripts": {
-    "test": "qunit 'js-tests/tests/*test.spec.js'",
+    "test": "karma start",
     "start": ""
   },
   "devDependencies": {
