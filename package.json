@@ -6,5 +6,10 @@
   "scripts": {
     "test": "qunit 'js-tests/tests/*test.spec.js'",
     "start": ""
+  },
+  "devDependencies": {
+    "karma": "^4.1.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-qunit": "^3.1.2"
   }
 }
