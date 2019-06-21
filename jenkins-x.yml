@@ -3,7 +3,7 @@ buildPack: none
 pipelineConfig:
   pipelines:
 
-    build:
+    release:
     # While the legacy build pack built-in stages can be used in jenkins-x.yaml, pipeline is preferred.
       pipeline:
         # Define a default container image we'll use throughout the pipeline, unless an explicit agent is
