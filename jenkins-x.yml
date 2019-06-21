@@ -1,6 +1,52 @@
-buildPack: python-ci
+buildPack: none
+
 pipelineConfig:
-  env:
-  - name: AWS_REGION
-    value: us-east-1
-  pipelines: {}
+  pipelines:
+
+    build:
+    # While the legacy build pack built-in stages can be used in jenkins-x.yaml, pipeline is preferred.
+      pipeline:
+        # Define a default container image we'll use throughout the pipeline, unless an explicit agent is
+        # specified on a stage or step.
+        agent:
+          image: "denispalnitskyaurea/builder-python-js" # or "maven" - this means "use the maven pod template"
+        # Environment variables are either static key/value pairs or Kubernetes valueFrom EnvVarSources.
+        # See https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#envvarsource-v1-core
+        # for more information on valueFrom.
+        # Environment variables defined at the top level can be overridden in stages and individual
+        # steps.        
+        options:
+          # containerOptions allows specifying more advanced default configuration for the containers
+          # used for all stages and steps in this scope, using the standard Kubernetes syntax for
+          # containers.
+          # See https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#container-v1-core.
+          # Not all fields can be configured - e.g., name, command, arguments, image, and dir are all
+          # defined via the syntax - but everything else can be.
+          # Like with environment variables, containerOptions at the top level can be overridden and
+          # added to by stages.
+          containerOptions:
+            # Here we're setting the resource requests and limits for all step containers within this
+            # pipeline.
+            volumeDevices:
+            - devicePath: /home/jenkins/trs
+              name: test-results-storage
+
+            volumeMounts:
+            - name: jenkins-maven-settings
+              mountPath: /root/.m2/
+            - name: jenkins-docker-cfg
+              mountPath: /home/jenkins/.docker
+            - name: jenkins-release-gpg
+              mountPath: /home/jenkins/.gnupg
+            
+            
+          # timeout allows you to set the maximum duration for builds of this pipeline.
+          timeout:
+            time: 15
+            unit: minutes
+        # A pipeline must contain at least one stage, and each stage must have a unique name.
+        stages:
+          - name: Stage With Steps And Options Etc            
+            steps:
+              - command: tail -f /dev/null
+                # args are a YAML array, so can be specified either on multiple lines or in a []                           
